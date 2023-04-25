@@ -1,41 +1,55 @@
-const express = require("express");
-const { createServer } = require("http");
-const { WebSocketServer } = require("y-websocket");
-const Y = require("yjs");
+const express = require('express');
+const { createServer } = require('http');
+const { yWebSocketHandler } = require('y-websocket');
+const Y = require('yjs');
 
 // Create an Express app
 const app = express();
 const server = createServer(app);
 
-// Set up a WebSocket server
-const yWebSocketServer = new WebSocketServer({ server });
-
-// Create a Yjs instance
+// Set up a Y.js WebSocket handler
 const ydoc = new Y.Doc();
-yWebSocketServer.bindToExpress(app);
+const yWebsocket = yWebSocketHandler(ydoc);
+
+// Bind the Y.js WebSocket handler to the server
+yWebsocket.bindToServer(server);
 
 // Define a shared Y.Text
-const ytext = ydoc.getText("myText");
+const ytext = ydoc.getText('myText');
 
 // Set up event listener for Yjs changes
-ytext.observe((event) => {
-  console.log("Yjs change:", event);
+ytext.observe(event => {
+  console.log('Yjs change:', event);
 });
 
 // Start the server
 server.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+  console.log('Server running on http://localhost:3000');
+});const express = require('express');
+const { createServer } = require('http');
+const { yWebSocketHandler } = require('y-websocket');
+const Y = require('yjs');
+
+// Create an Express app
+const app = express();
+const server = createServer(app);
+
+// Set up a Y.js WebSocket handler
+const ydoc = new Y.Doc();
+const yWebsocket = yWebSocketHandler(ydoc);
+
+// Bind the Y.js WebSocket handler to the server
+yWebsocket.bindToServer(server);
+
+// Define a shared Y.Text
+const ytext = ydoc.getText('myText');
+
+// Set up event listener for Yjs changes
+ytext.observe(event => {
+  console.log('Yjs change:', event);
 });
 
-// const http = require('http');
-// const PORT = 3000;
-
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/plain');
-//   res.end('Hello World!');
-// });
-
-// server.listen(PORT, () => {
-//   console.log(`Server running at http://localhost:${PORT}/`);
-// });
+// Start the server
+server.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
