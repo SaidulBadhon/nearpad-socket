@@ -1,28 +1,40 @@
-const express = require('express');
-const { createServer } = require('http');
-const { yWebSocketHandler } = require('y-websocket');
-const Y = require('yjs');
+const express = require("express");
+const http = require("http");
+const WebSocket = require("ws");
+const Y = require("yjs");
 
-// Create an Express app
 const app = express();
-const server = createServer(app);
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
-// Set up a Y.js WebSocket handler
+// Define a shared document
 const ydoc = new Y.Doc();
-const yWebsocket = yWebSocketHandler(ydoc);
+const ytext = ydoc.getText("my-text-element");
 
-// Bind the Y.js WebSocket handler to the server
-yWebsocket.bindToServer(server);
+// Broadcast updates to all connected clients
+function broadcastUpdates(event) {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(event));
+    }
+  });
+}
 
-// Define a shared Y.Text
-const ytext = ydoc.getText('myText');
-
-// Set up event listener for Yjs changes
-ytext.observe(event => {
-  console.log('Yjs change:', event);
+// Update the shared document when the user types
+ytext.observe((event) => {
+  broadcastUpdates({
+    type: "update",
+    data: {
+      text: ytext.toString(),
+      event,
+    },
+  });
 });
+
+// Serve the client-side code
+app.use(express.static("public"));
 
 // Start the server
 server.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+  console.log(`Server started on port ${server.address().port}`);
 });
