@@ -22,7 +22,8 @@ function broadcastUpdates(event) {
 
 // Update the shared document when the user types
 ytext.observe((event) => {
-  broadcastUpdates({
+   console.log("Yjs change:", event);
+ broadcastUpdates({
     type: "update",
     data: {
       text: ytext.toString(),
