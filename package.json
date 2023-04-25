@@ -6,6 +6,10 @@
   "author": "alphasec",
   "license": "MIT",
    "dependencies": {
+      "express": "^4.18.2",
+      "http": "0.0.1-security",
+      "y-websocket": "^1.5.0",
+      "yjs": "^13.6.0"
   },
   "scripts": {
     "start": "node index.js"
