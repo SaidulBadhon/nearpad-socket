@@ -4,7 +4,7 @@ const http = require("http");
 // const socketIO = require("socket.io");
 const io = require("socket.io")(8900, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: '*',
     credentials: true,
     methods: ["GET", "POST"],
   },
