@@ -174,7 +174,7 @@ io.on("connection", (socket) => {
 });
 
 // Start the server
-const port = 3001; // You can choose any port number you prefer
+const port = 3000; // You can choose any port number you prefer
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
