@@ -1,28 +1,20 @@
 // Import necessary modules
-// const express = require("express");
-// const http = require("http");
-// // const socketIO = require("socket.io");
-// const io = require("socket.io")(8900, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     credentials: true,
-//     methods: ["GET", "POST"],
-//   },
-// });
-// const cors = require("cors");
-
-// const app = express(); // Create an express app
-// app.use(cors());
-
-// const server = http.createServer(app); // Create an http server using the express app
-
 const express = require("express");
 const http = require("http");
-const { Server } = require("socket.io");
+// const socketIO = require("socket.io");
+const io = require("socket.io")(3000, {
+  cors: {
+    origin: "*",
+    credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
+const cors = require("cors");
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+const app = express(); // Create an express app
+app.use(cors());
+
+const server = http.createServer(app); // Create an http server using the express app
 
 const users = new Map(); // Map to store users with socket IDs as keys
 const channels = new Map(); // Map to store channels with connected users as values
@@ -174,7 +166,7 @@ io.on("connection", (socket) => {
 });
 
 // Start the server
-const port = 3000; // You can choose any port number you prefer
+const port = 3001; // You can choose any port number you prefer
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
