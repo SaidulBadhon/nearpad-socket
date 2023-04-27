@@ -4,7 +4,7 @@ const http = require("http");
 // const socketIO = require("socket.io");
 const io = require("socket.io")(3000, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST"],
   },
@@ -16,6 +16,27 @@ app.use(cors());
 
 const server = http.createServer(app); // Create an http server using the express app
 
+var colors = [
+  "#E53935",
+  "#D81B60",
+  "#8E24AA",
+  "#5E35B1",
+  "#3949AB",
+  "#1E88E5",
+  "#039BE5",
+  "#00ACC1",
+  "#00897B",
+  "#43A047",
+  "#7CB342",
+  "#C0CA33",
+  "#FDD835",
+  "#FFB300",
+  "#FB8C00",
+  "#F4511E",
+  "#6D4C41",
+  "#757575",
+  "#546E7A",
+];
 const users = new Map(); // Map to store users with socket IDs as keys
 const channels = new Map(); // Map to store channels with connected users as values
 
@@ -48,6 +69,7 @@ io.on("connection", (socket) => {
     socket.user = user; // Set the user object as a property of the socket object
     users.set(socket.id, user); // Store user with socket ID as key in the users map
     user.channel = channel; // Store the channel information in the user object
+    user["color"] = colors[Math.floor(Math.random() * colors.length)];
     if (!channels.has(channel)) {
       channels.set(channel, new Map());
     }
@@ -80,93 +102,10 @@ io.on("connection", (socket) => {
       `User ${socket.user.fullName} sent a code in channel ${channel}: ${code}`
     );
   });
-
-  //
-  // console.log("Client connected:", socket.id);
-  // users[socket.id] = {}; //Create Users - 유저를 생성함
-  // users[socket.id].user = socket.user = "user" + conId; //set username - 이름 설정
-  // users[socket.id].admin = socket.admin = false; //set admin - 처음 연결한 사람(주인) 여부
-  // users[socket.id].color = socket.color = colors[conId % colors.length]; //set highight colors - 하이라이트 색
-  // conId++; //UserId increment - 연결된 사람을 1 더한다
-  // console.log("[Socket.IO]  + nsp +  : Connect " + socket.id); //print connect - 연결됐다고 알림
-  // if (server?.sockets?.length == 1) {
-  //   //if First Connect Client - 처음 연결 여부 (server.sockets는 연결된 클라이언트들이다.)
-  //   socket.emit("admin"); //alert Admin - 주인이라고 알려줌
-  //   socket.admin = true;
-  //   // import file data from database - 여기서 파일 내용을 들고옴. (DB또는 다른 곳))
-  //   // socket.emit('resetdata', data) - 들고온 파일의 내용을 socket.emit으로 보냄
-  // } else {
-  //   socket.emit("userdata", Object.values(users));
-  // } //send connected Users list
-  // socket.broadcast.emit("connected", {
-  //   user: socket.user,
-  //   color: socket.color,
-  // }); //Alert New Connect - Returms the current user
-  // socket.on("selection", function (data) {
-  //   //Content Select Or Cursor Change Event
-  //   data.color = socket.color;
-  //   data.user = socket.user;
-  //   socket.broadcast.emit("selection", data);
-  // });
-  // socket.on("filedata", function (data) {
-  //   //File Data Event - 파일 내용을 알려주면
-  //   socket.broadcast.emit("resetdata", data); //Give File Data - 다른 사람에게 전함
-  // });
-  // socket.on("disconnect", function (data) {
-  //   //Client Disconnected
-  //   console.log("[Socket.IO]  + nsp +  : disconnect " + socket.id); //print disconnect
-  //   socket.broadcast.emit("exit", users[socket.id].user); //Alert Exit Connect
-  //   socket.broadcast.emit("getUsers", Object.values(users));
-  //   delete users[socket.id]; //delete from Server
-  // });
-  // socket.on("key", (data) => {
-  //   //Change Content Event
-  //   data.user = socket.user;
-  //   console.log(data);
-  //   socket.broadcast.emit("key", data);
-  //   socket.broadcast.emit("getUsers", Object.values(users));
-  // });
-  // socket.broadcast.emit("getUsers", Object.values(users));
-
-  // VARY OLD COODE
-  // console.log("Client connected:", socket.id);
-  // addUser(socket.id, colors[conId % colors.length]);
-  // console.log("Client connected:", socket.id);
-  // if (server?.sockets?.length == 1) {
-  //   socket.emit("admin");
-  //   socket.admin = true;
-  // } else {
-  //   socket.emit("userdata", Object.values(users)); //send Connected User data
-  //   socket.broadcast.emit("connected", {
-  //     user: socket.user,
-  //     color: socket.color,
-  //   }); //Alert New Connect
-  //   socket.on("selection", function (data) {
-  //     //Content Select Or Cursor Change Event
-  //     data.color = socket.color;
-  //     data.user = socket.user;
-  //     socket.broadcast.emit("selection", data);
-  //   });
-  //   socket.on("filedata", function (data) {
-  //     //File Data Event
-  //     socket.broadcast.emit("resetdata", data); //Give File Data
-  //   });
-  //   socket.on("disconnect", function (data) {
-  //     //Client Disconnected
-  //     console.log("[Socket.IO] : disConnect " + socket.id); //print disconnect
-  //     socket.broadcast.emit("exit", users[socket.id]?.user); //Alert Exit Connect
-  //     delete users[socket.id]; //delete from Server
-  //   });
-  //   socket.on("key", function (data) {
-  //     //Change Content Event
-  //     data.user = socket.user;
-  //     socket.broadcast.emit("key", data);
-  //   });
-  // }
 });
 
 // Start the server
-const port = 3001; // You can choose any port number you prefer
+const port = 3002; // You can choose any port number you prefer
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
